@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserAuthController extends Controller
 {
@@ -17,12 +18,23 @@ class UserAuthController extends Controller
     {
     }
 
-    public function test()
+    public function test(Request $request)
     {
-        $data = $this->user
-                ->with('restaurant.tables')
-                ->get();
+        // $credentials = request(['username', 'password']);
 
-        return response($data, 200);
+        // $token = auth('api')->attempt($credentials);
+        // if (!$token) {
+        //     return response()->json(['error' => 'Unauthorized'], 401);
+        // }
+
+        // return response(['token' => $token], 200);
+        
+        return response()->json(auth()->user());
+
+        // $data = $this->user
+        //         ->with('restaurant.tables')
+        //         ->get();
+
+        // return response($data, 200);
     }
 }
