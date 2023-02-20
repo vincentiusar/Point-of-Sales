@@ -19,4 +19,6 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::get('/test', [UserAuthController::class, 'test']);
+Route::middleware('auth:api')->group(function () {
+    Route::get('/test', [UserAuthController::class, 'test']);
+});
