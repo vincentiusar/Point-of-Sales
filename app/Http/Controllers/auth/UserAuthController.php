@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\auth;
+namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
@@ -73,6 +73,6 @@ class UserAuthController extends Controller
 
     public function test(Request $request)
     {
-
+        return ResponseStatus::response('hai');
     }
 }
