@@ -6,20 +6,29 @@ use App\Services\AuthService;
 
 class AuthServiceImpl implements AuthService
 {
-
-    public function validateUser($username, $pass) {
-
-    }
-
     public function login($username, $pass) {
-        return 'ok';
-    }
-
-    public function signup($user) {
+        $credentials = ['username' => $username, 'password' => $pass];
         
+        $token = auth('api')->attempt($credentials);
+        if (!$token)
+            return (object) ['data' => 'Unauthorized', 'status' => 'Unauthorized', 'statusCode' => 401];
+
+        return (object) [
+            'data' => [
+                'token' => $token
+            ],
+            'status' => "success",
+            'statusCode' => 200,
+        ];
     }
 
     public function logout() {
+        auth()->logout();
 
+        return (object) [
+            'data' => null,
+            'status' => "success",
+            'statusCode' => 200
+        ];
     }
 }
