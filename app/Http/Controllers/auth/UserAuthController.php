@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Resources\Auth\AuthLoginResource;
+use App\Http\Resources\Auth\AuthMeResource;
 use App\Models\Restaurant;
 use App\Models\User;
 use App\Services\AuthService;
+use Error;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Shareds\ResponseStatus;
 
 class UserAuthController extends Controller
 {
@@ -20,27 +24,55 @@ class UserAuthController extends Controller
     {
     }
 
+    /**
+     * Function to log in
+     * 
+     * @param LoginRequest $request
+     * @return ResponseStatus
+     */
+    public function login(LoginRequest $request) {
+        try {
+            $data = $this->authService->login($request->username, $request->password);
+
+            return ResponseStatus::response(new AuthLoginResource($data?->data), $data->status, $data->statusCode);
+        } catch (Error $err) {
+            return ResponseStatus::response(['Message' => $err], 'Server Internal Error', 500);
+        }
+    }
+
+
+    /**
+     * Function to get user base on token
+     * 
+     * @param
+     * @return ResponseStatus
+     */
+    public function me() {
+        try {
+            return ResponseStatus::response(new AuthMeResource(auth()->user()));
+        } catch (Error $err) {
+            return ResponseStatus::response(['Message' => $err], 'Server Internal Error', 500);
+        }
+    }
+
+    /**
+     * Function to log out
+     * 
+     * @param
+     * @return ResponseStatus
+     */
+    public function logout() {
+        try {
+            $this->authService->logout();
+
+            return ResponseStatus::response(null);
+        } catch (Error $err) {
+            return ResponseStatus::response(['Message' => $err], 'Server Internal Error', 500);
+        }
+    }
+
     public function test(Request $request)
     {
-        // $response = $this->authService->login(request(['username']), request(['password']));
 
-        // return response()->json($response);
-        
-        // $credentials = request(['username', 'password']);
-
-        // $token = auth('api')->attempt($credentials);
-        // if (!$token) {
-        //     return response()->json(['error' => 'Unauthorized'], 401);
-        // }
-
-        // return response(['token' => $token], 200);
-        
-        return response()->json(auth()->user());
-
-        // $data = $this->user
-        //         ->with('restaurant.tables')
-        //         ->get();
-
-        // return response($data, 200);
     }
 }

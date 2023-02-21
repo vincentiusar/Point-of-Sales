@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\auth\UserAuthController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,5 +20,12 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/test', [UserAuthController::class, 'test']);
-Route::middleware('auth:api')->group(function () {
+
+Route::middleware(['cors', 'json.response'])->group(function () {    
+    Route::post('/login', [UserAuthController::class, 'login']);
+});
+
+Route::middleware(['cors', 'json.response', 'auth:api'])->group(function () {
+    Route::delete('/logout', [UserAuthController::class, 'logout']);
+    Route::get('/me', [UserAuthController::class, 'me']);
 });
