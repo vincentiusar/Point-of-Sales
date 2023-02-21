@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\Auth\PermissionConstant;
 use App\Http\Controllers\auth\UserAuthController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
@@ -28,4 +29,8 @@ Route::middleware(['cors', 'json.response'])->group(function () {
 Route::middleware(['cors', 'json.response', 'auth:api'])->group(function () {
     Route::delete('/logout', [UserAuthController::class, 'logout']);
     Route::get('/me', [UserAuthController::class, 'me']);
+
+    Route::group(['prefix' => '/table'], function () {
+        Route::middleware('permission:' . PermissionConstant::ADD_TABLE)->post('/add', [UserAuthController::class, 'test']);
+    });
 });

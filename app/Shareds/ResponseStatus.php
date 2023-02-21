@@ -23,6 +23,6 @@ class ResponseStatus
             'status' => $status ?? 'success',
             'statusCode' => $statusCode ?? 200,
             'data' => $data ?? null,
-        ]);
+        ], $statusCode);
     }
 }

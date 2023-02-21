@@ -17,7 +17,7 @@ class AuthLoginResource extends JsonResource
         $this->resource = (object) $this->resource;
 
         return [
-            'token' => $this?->token,
+            'token' => $this?->token ?? null,
         ];
     }
 }
