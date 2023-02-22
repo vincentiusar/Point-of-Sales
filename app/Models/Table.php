@@ -21,6 +21,7 @@ class Table extends Model
     protected $fillable = [
         'restaurant_id',
         'status',
+        'session_id',
     ];
 
     /**
