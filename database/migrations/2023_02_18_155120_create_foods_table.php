@@ -11,13 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('foods', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('restaurant_id')->constrained('restaurants')->onDelete('cascade');
             $table->string('name');
-            $table->string('username')->unique();
-            $table->string('password');
+            $table->text('description');
+            $table->bigInteger('quantity');
+            $table->unsignedFloat('price');
+            $table->enum('category', ['dessert', 'main dishes', 'appetizer', 'beverage']);
+            $table->string('image');
             $table->softDeletes();
-            $table->rememberToken();
             $table->timestamps();
         });
     }
@@ -27,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('foods');
     }
 };
