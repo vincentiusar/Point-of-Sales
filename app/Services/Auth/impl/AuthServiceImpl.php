@@ -1,11 +1,19 @@
 <?php
 
-namespace App\Services\impl;
+namespace App\Services\Auth\impl;
 
-use App\Services\AuthService;
+use App\Models\User;
+use App\Services\Auth\AuthService;
+use App\Shareds\BaseService;
 
-class AuthServiceImpl implements AuthService
+class AuthServiceImpl extends BaseService implements AuthService
 {
+
+    public function __construct(private readonly User $user)
+    {
+        parent::__construct($user);
+    }
+
     public function login($username, $pass) {
         $credentials = ['username' => $username, 'password' => $pass];
         
