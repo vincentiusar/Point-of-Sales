@@ -2,7 +2,9 @@
 
 use App\Constants\Auth\PermissionConstant;
 use App\Http\Controllers\auth\UserAuthController;
+use App\Http\Controllers\Restaurant\RestaurantController;
 use App\Http\Controllers\User\UserController;
+use App\Models\Restaurant;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,8 +31,16 @@ Route::middleware(['cors', 'json.response'])->group(function () {
 Route::middleware(['cors', 'json.response', 'auth:api'])->group(function () {
     Route::delete('/logout', [UserAuthController::class, 'logout']);
     Route::get('/me', [UserAuthController::class, 'me']);
-
+    
     Route::group(['prefix' => '/table'], function () {
         Route::middleware('permission:' . PermissionConstant::ADD_TABLE)->post('/add', [UserAuthController::class, 'test']);
+    });
+    
+    Route::group(['prefix' => '/restaurant'], function () {
+        Route::get('/my', [RestaurantController::class, 'showByToken']);
+
+        Route::middleware(['permission:' . PermissionConstant::GET_ALL_RESTAURANT . '|' . PermissionConstant::IS_SUPER_ADMIN])->get('/', [RestaurantController::class, 'index']);
+        Route::middleware(['permission:' . PermissionConstant::GET_ONE_RESTAURANT, 'is_the_owner'])->get('/{id}', [RestaurantController::class, 'show']);
+        Route::middleware(['permission:' . PermissionConstant::UPDATE_RESTAURANT, 'is_the_owner'])->get('/update/{id}', [RestaurantController::class, 'update']);
     });
 });

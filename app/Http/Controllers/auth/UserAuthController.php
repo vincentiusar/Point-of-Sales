@@ -8,7 +8,7 @@ use App\Http\Resources\Auth\AuthLoginResource;
 use App\Http\Resources\Auth\AuthMeResource;
 use App\Models\Restaurant;
 use App\Models\User;
-use App\Services\AuthService;
+use App\Services\Auth\AuthService;
 use Error;
 use Illuminate\Http\Request;
 use App\Shareds\ResponseStatus;
@@ -36,7 +36,7 @@ class UserAuthController extends Controller
 
             return ResponseStatus::response(new AuthLoginResource($data?->data), $data->status, $data->statusCode);
         } catch (Error $err) {
-            return ResponseStatus::response(['Message' => $err], 'Server Internal Error', 500);
+            return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
         }
     }
 
@@ -51,7 +51,7 @@ class UserAuthController extends Controller
         try {
             return ResponseStatus::response(new AuthMeResource(auth()->user()));
         } catch (Error $err) {
-            return ResponseStatus::response(['Message' => $err], 'Server Internal Error', 500);
+            return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
         }
     }
 
@@ -67,7 +67,7 @@ class UserAuthController extends Controller
 
             return ResponseStatus::response(null);
         } catch (Error $err) {
-            return ResponseStatus::response(['Message' => $err], 'Server Internal Error', 500);
+            return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
         }
     }
 
