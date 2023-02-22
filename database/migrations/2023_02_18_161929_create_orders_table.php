@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('food_id')->constrained('foods')->onDelete('cascade');
             $table->foreignId('restaurant_id')->constrained('restaurants')->onDelete('cascade');
             $table->enum('status', ['on process', 'served', 'cancelled']);
-            $table->foreignId('transaction_id')->constrained('transactions');
+            $table->foreignId('transaction_id')->constrained('transactions')->onDelete('cascade');
             $table->unsignedDouble('total');
             $table->unsignedBigInteger('quantity');
             $table->timestamps();
