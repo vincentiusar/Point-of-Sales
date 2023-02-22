@@ -20,6 +20,7 @@ class TableSeeder extends Seeder
             'created_at' => null,
             'updated_at' => null,
             'deleted_at' => null,
+            'session_id' => 1,
         ]);
     }
 }
