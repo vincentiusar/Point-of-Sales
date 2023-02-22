@@ -23,10 +23,12 @@ class PermissionCheck
     public function handle(Request $request, \Closure $next, string $permissionKey)
     {
         $permissionsArray = explode('|', $permissionKey);
-        $user_role = Auth::user()->role_id;
-        $permissions = RolePermission::with('permission')->where('role_id', $user_role)->get()->toArray();
+
+        $user = auth()->user();
+        $permissions = $user->role->permissions;
+
         $permissionKeys = collect($permissions)->map(function ($permission) {
-            return $permission['permission']['key'];
+            return $permission['key'];
         })->toArray();
 
         foreach ($permissionsArray as $item) {
