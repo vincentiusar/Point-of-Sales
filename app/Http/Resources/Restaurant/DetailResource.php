@@ -16,7 +16,16 @@ class DetailResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'admin_id' => $this->admin_id,
+            'admin' => $this->admin ? 
+                [
+                    "id" => $this?->admin?->id,
+                    "name" => $this?->admin?->name,
+                    "username" => $this?->admin?->username,
+                    "role_id" => $this?->admin?->role_id,
+                    "restaurant_id" => $this?->admin?->restaurant_id
+                ] 
+                    : 
+                null,
             'name' => $this->name,
             'description' => $this->description,
             'address' => $this->address,
