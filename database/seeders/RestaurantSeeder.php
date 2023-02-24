@@ -14,14 +14,24 @@ class RestaurantSeeder extends Seeder
     public function run(): void
     {
         DB::table('restaurants')->insert([
-            'id' => 1,
-            'admin_id' => 1,
-            'name' => 'ada namanya',
-            'description' => 'restoran yang bisa buat orang sentolop',
-            'address' => 'jalan sentolop raya',
-            'created_at' => null,
-            'updated_at' => null,
-            'deleted_at' => null,
+            [
+                'id' => 1,
+                'name' => 'ada namanya',
+                'description' => 'restoran yang bisa buat orang sentolop',
+                'address' => 'jalan sentolop raya',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
+            ],
+            [
+                'id' => 2,
+                'name' => 'ASTAGOT',
+                'description' => 'Resto ini ganti nama',
+                'address' => 'adadda',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
+            ],
         ]);
     }
 }
