@@ -70,9 +70,4 @@ class UserAuthController extends Controller
             return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
         }
     }
-
-    public function test(Request $request)
-    {
-        return ResponseStatus::response('hai');
-    }
 }
