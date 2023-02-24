@@ -3,6 +3,9 @@
 namespace App\Services\Restaurant\impl;
 
 use App\Http\Requests\DataTableRequest;
+use App\Http\Requests\Restaurant\DeleteRestaurantRequest;
+use App\Http\Requests\Restaurant\UpdateRestaurantByIDRequest;
+use App\Http\Requests\Restaurant\UpdateRestaurantRequest;
 use App\Models\Restaurant;
 use App\Services\Restaurant\RestaurantService;
 use App\Shareds\BaseService;
@@ -37,9 +40,15 @@ class RestaurantServiceImpl extends BaseService implements RestaurantService
         $sort = getValueOrDefault($request->sort, self::ALLOW_TO_SORT_AND_SEARCH, 'id');
 
         $queryData = $this->restaurant
+                    ->with(
+                        [
+                            'admin' => function ($query) {
+                                return $query->select(['id', 'name', 'username', 'role_id', 'restaurant_id']);
+                            }
+                        ]
+                    )
                     ->select([
                         'id',
-                        'admin_id',
                         'name',
                         'description',
                         'address',
@@ -56,8 +65,19 @@ class RestaurantServiceImpl extends BaseService implements RestaurantService
         return $this->findById($id);
     }
 
-    public function updateRestaurant(int $id) 
+    public function updateRestaurant(UpdateRestaurantRequest|UpdateRestaurantByIDRequest $request)
     {
-        
+        $restaurant = $this->find($request->restaurant_id);
+        $restaurant->update($request->all());
+
+        return $restaurant;
+    }
+
+    public function deleteById(DeleteRestaurantRequest $request)
+    {
+        $restaurant = $this->find($request->restaurant_id);
+        $this->delete($request->restaurant_id);
+
+        return $restaurant;
     }
 }

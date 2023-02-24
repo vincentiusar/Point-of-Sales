@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Restaurant;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DataTableRequest;
+use App\Http\Requests\Restaurant\DeleteRestaurantRequest;
 use App\Http\Requests\Restaurant\GetRestaurantRequest;
+use App\Http\Requests\Restaurant\UpdateRestaurantByIDRequest;
 use App\Http\Requests\Restaurant\UpdateRestaurantRequest;
 use App\Http\Resources\Restaurant\DetailResource;
 use App\Http\Resources\Restaurant\IndexCollection;
@@ -73,22 +75,53 @@ class RestaurantController extends Controller
     }
     
     /**
-     * Update Restaurant by ID
+     * Update Restaurant by user token
      * 
      * @param UpdateRestaurantRequest $request
      * @return ResponseStatus
      */
-    public function update(UpdateRestaurantRequest $request)
+    public function updateByToken(UpdateRestaurantRequest $request)
     {
         try {
-            
+            $data = $this->restaurantService->updateRestaurant($request);
 
-            $data = null;
-
-            return ResponseStatus::response(new DetailResource($data));
+            return ResponseStatus::response(['item' => new DetailResource($data), 'message' => 'Update Success']);
         } catch (Error $err) {
             return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
         }
     }
 
+    /**
+     * Update Restaurant by ID
+     * 
+     * @param UpdateRestaurantRequest $request
+     * @return ResponseStatus
+     */
+    public function updateById(UpdateRestaurantByIDRequest $request)
+    {
+        try {
+            $data = $this->restaurantService->updateRestaurant($request);
+
+            return ResponseStatus::response(['item' => new DetailResource($data), 'message' => 'Update Success']);
+        } catch (Error $err) {
+            return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
+        }
+    }
+
+    /**
+     * Delete Restaurant by ID
+     * 
+     * @param DeleteRestaurantRequest $request
+     * @return ResponseStatus
+     */
+    public function delete(DeleteRestaurantRequest $request)
+    {
+        try {
+            $data = $this->restaurantService->deleteById($request);
+
+            return ResponseStatus::response(['item' => new DetailResource($data), 'message' => 'Delete Success']);
+        } catch (Error $err) {
+            return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
+        }
+    }
 }

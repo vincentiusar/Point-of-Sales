@@ -22,7 +22,9 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::get('/test', [UserAuthController::class, 'test']);
+Route::get('/test', function() {
+    
+});
 
 Route::middleware(['cors', 'json.response'])->group(function () {    
     Route::post('/login', [UserAuthController::class, 'login']);
@@ -41,6 +43,8 @@ Route::middleware(['cors', 'json.response', 'auth:api'])->group(function () {
 
         Route::middleware(['permission:' . PermissionConstant::GET_ALL_RESTAURANT . '|' . PermissionConstant::IS_SUPER_ADMIN])->get('/', [RestaurantController::class, 'index']);
         Route::middleware(['permission:' . PermissionConstant::GET_ONE_RESTAURANT, 'is_the_owner'])->get('/{id}', [RestaurantController::class, 'show']);
-        Route::middleware(['permission:' . PermissionConstant::UPDATE_RESTAURANT, 'is_the_owner'])->get('/update/{id}', [RestaurantController::class, 'update']);
+        Route::middleware(['permission:' . PermissionConstant::UPDATE_RESTAURANT, 'is_the_owner'])->put('/update', [RestaurantController::class, 'updateByToken']);
+        Route::middleware(['permission:' . PermissionConstant::UPDATE_RESTAURANT . '|' . PermissionConstant::IS_SUPER_ADMIN])->put('/update/{id}', [RestaurantController::class, 'updateById']);
+        Route::middleware(['permission:' . PermissionConstant::DELETE_RESTAURANT . '|' . PermissionConstant::IS_SUPER_ADMIN])->delete('/delete/{id}', [RestaurantController::class, 'delete']);
     });
 });
