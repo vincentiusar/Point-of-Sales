@@ -3,8 +3,8 @@
 use App\Constants\Auth\PermissionConstant;
 use App\Http\Controllers\auth\UserAuthController;
 use App\Http\Controllers\Restaurant\RestaurantController;
+use App\Http\Controllers\Table\TableController;
 use App\Http\Controllers\User\UserController;
-use App\Models\Restaurant;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,9 +22,7 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::get('/test', function() {
-    
-});
+Route::get('/test', );
 
 Route::middleware(['cors', 'json.response'])->group(function () {    
     Route::post('/login', [UserAuthController::class, 'login']);
@@ -34,17 +32,32 @@ Route::middleware(['cors', 'json.response', 'auth:api'])->group(function () {
     Route::delete('/logout', [UserAuthController::class, 'logout']);
     Route::get('/me', [UserAuthController::class, 'me']);
     
-    Route::group(['prefix' => '/table'], function () {
-        Route::middleware('permission:' . PermissionConstant::ADD_TABLE)->post('/add', [UserAuthController::class, 'test']);
-    });
-    
     Route::group(['prefix' => '/restaurant'], function () {
         Route::get('/my', [RestaurantController::class, 'showByToken']);
 
+        // PURE RESTAURANT REQUEST
         Route::middleware(['permission:' . PermissionConstant::GET_ALL_RESTAURANT . '|' . PermissionConstant::IS_SUPER_ADMIN])->get('/', [RestaurantController::class, 'index']);
-        Route::middleware(['permission:' . PermissionConstant::GET_ONE_RESTAURANT, 'is_the_owner'])->get('/{id}', [RestaurantController::class, 'show']);
-        Route::middleware(['permission:' . PermissionConstant::UPDATE_RESTAURANT, 'is_the_owner'])->put('/update', [RestaurantController::class, 'updateByToken']);
-        Route::middleware(['permission:' . PermissionConstant::UPDATE_RESTAURANT . '|' . PermissionConstant::IS_SUPER_ADMIN])->put('/update/{id}', [RestaurantController::class, 'updateById']);
-        Route::middleware(['permission:' . PermissionConstant::DELETE_RESTAURANT . '|' . PermissionConstant::IS_SUPER_ADMIN])->delete('/delete/{id}', [RestaurantController::class, 'delete']);
+        Route::middleware(['permission:' . PermissionConstant::GET_ONE_RESTAURANT, 'is_the_owner'])->get('/{restaurant_id}', [RestaurantController::class, 'show']);
+        Route::middleware(['permission:' . PermissionConstant::UPDATE_RESTAURANT])->put('/update', [RestaurantController::class, 'updateByToken']);
+        Route::middleware(['permission:' . PermissionConstant::UPDATE_RESTAURANT . '|' . PermissionConstant::IS_SUPER_ADMIN, 'is_the_owner'])->put('/update/{restaurant_id}', [RestaurantController::class, 'updateById']);
+        Route::middleware(['permission:' . PermissionConstant::DELETE_RESTAURANT . '|' . PermissionConstant::IS_SUPER_ADMIN, 'is_the_owner'])->delete('/delete/{restaurant_id}', [RestaurantController::class, 'delete']);
+    
+        // RESTAURANT TABLE REQUEST
+        Route::middleware(['permission:' . PermissionConstant::GET_ALL_TABLE_BY_RESTAURANT_ID, 'is_the_owner'])->get('/{restaurant_id}/table', [TableController::class, 'getAllByRestaurantID']);
+        
+        Route::group(['prefix' => '/{restaurant_id}/table'], function () {
+            Route::middleware(['permission:' . PermissionConstant::GET_ONE_TABLE, 'is_the_owner'])->get('/{id}', [TableController::class, 'show']);
+            Route::middleware(['permission:' . PermissionConstant::ADD_TABLE, 'is_the_owner'])->post('/add', [TableController::class, 'create']);
+            Route::middleware(['permission:' . PermissionConstant::UPDATE_TABLE, 'is_the_owner'])->put('/update/{id}', [TableController::class, 'update']);
+            Route::middleware(['permission:' . PermissionConstant::DELETE_TABLE, 'is_the_owner'])->delete('/delete/{id}', [TableController::class, 'delete']);
+        });
+
+        // Route::group(['prefix' => '/{restaurant_id}/food'], function () {
+
+        // });
+    });
+    
+    Route::group(['prefix' => '/table'], function () {
+        Route::middleware(['permission:' . PermissionConstant::IS_SUPER_ADMIN])->get('/', [TableController::class, 'index']);
     });
 });
