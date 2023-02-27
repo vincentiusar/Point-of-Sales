@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Constants\Auth\PermissionConstant;
 use App\Models\RolePermission;
 use App\Shareds\ResponseStatus;
 use Closure;
@@ -31,12 +32,15 @@ class PermissionCheck
             return $permission['key'];
         })->toArray();
 
+        if (in_array(PermissionConstant::IS_SUPER_ADMIN, $permissionKeys))
+            return $next($request);
+
         foreach ($permissionsArray as $item) {
             if (in_array($item, $permissionKeys)) {
                 return $next($request);
             }
-
-            return ResponseStatus::response("Cannot get in", 'Unauthorized', 401);
         }
+            
+        return ResponseStatus::response("Cannot get in", 'Unauthorized', 401);
     }
 }

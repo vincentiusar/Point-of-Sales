@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Constants\Auth\PermissionConstant;
 use App\Shareds\ResponseStatus;
 use Closure;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ class IsTheOwner
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $restaurant_id = (int) $request->route('id');
+        $restaurant_id = (int) $request->route('restaurant_id');
 
         $user = auth()->user();
         $permissions = $user->role->permissions;
@@ -26,7 +27,7 @@ class IsTheOwner
         })->toArray();
 
         foreach ($permissionKeys as $item) {
-            if ($item === 'super-admin') {
+            if ($item === PermissionConstant::IS_SUPER_ADMIN) {
                 return $next($request);
             }
         }

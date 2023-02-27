@@ -21,9 +21,9 @@ class GetRestaurantRequest extends FormRequest
      */
     public function rules(): array
     {
-        $this['id'] = $this->route('id');
+        $this['restaurant_id'] = $this->route('restaurant_id');
         return [
-            'id' => 'required|integer'
+            'restaurant_id' => 'required|integer|exists:restaurants,id,deleted_at,NULL'
         ];
     }
 }

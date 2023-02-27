@@ -49,7 +49,7 @@ class RestaurantController extends Controller
     public function show(GetRestaurantRequest $request)
     {
         try {
-            $data = $this->restaurantService->find((int) $request->id);
+            $data = $this->restaurantService->find((int) $request->restaurant_id);
 
             return ResponseStatus::response(new DetailResource($data));
         } catch (Error $err) {
