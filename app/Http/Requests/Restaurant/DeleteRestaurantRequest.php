@@ -21,7 +21,7 @@ class DeleteRestaurantRequest extends FormRequest
      */
     public function rules(): array
     {
-        $this['restaurant_id'] = $this->route('id');
+        $this['restaurant_id'] = $this->route('restaurant_id');
         return [
             'restaurant_id' => 'integer|required|exists:restaurants,id,deleted_at,NULL',
         ];

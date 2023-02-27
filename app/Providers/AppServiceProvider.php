@@ -6,6 +6,8 @@ use App\Services\Auth\AuthService;
 use App\Services\Auth\impl\AuthServiceImpl;
 use App\Services\Restaurant\impl\RestaurantServiceImpl;
 use App\Services\Restaurant\RestaurantService;
+use App\Services\Table\impl\TableServiceImpl;
+use App\Services\Table\TableService;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -19,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(AuthService::class, AuthServiceImpl::class);
         $this->app->bind(RestaurantService::class, RestaurantServiceImpl::class);
+        $this->app->bind(TableService::class, TableServiceImpl::class);
     }
 
     /**

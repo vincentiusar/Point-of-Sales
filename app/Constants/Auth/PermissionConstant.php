@@ -15,5 +15,9 @@ class PermissionConstant
     const DELETE_RESTAURANT = 'delete-restaurant';
 
     // TABLE PERMISSION
+    const GET_ONE_TABLE = 'get-one-table';
+    const GET_ALL_TABLE_BY_RESTAURANT_ID = 'get-all-table-by-restaurant-id';
     const ADD_TABLE = 'add-table';
+    const UPDATE_TABLE = 'update-table';
+    const DELETE_TABLE = 'delete-table';
 }

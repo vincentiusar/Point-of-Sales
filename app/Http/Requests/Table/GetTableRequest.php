@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Restaurant;
+namespace App\Http\Requests\Table;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateRestaurantByIDRequest extends FormRequest
+class GetTableRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,12 +21,9 @@ class UpdateRestaurantByIDRequest extends FormRequest
      */
     public function rules(): array
     {
-        $this['restaurant_id'] = $this->route('restaurant_id');
+        $this['id'] = $this->route('id');
         return [
-            'restaurant_id' => 'integer|required|exists:restaurants,id,deleted_at,NULL',
-            'name' => 'string',
-            'description' => 'string',
-            'address' => 'string'
+            'id' => 'integer|required|exists:tables,id,deleted_at,NULL',
         ];
     }
 }

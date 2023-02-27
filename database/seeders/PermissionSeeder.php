@@ -70,6 +70,31 @@ class PermissionSeeder extends Seeder
                 'updated_at' => null,
                 'deleted_at' => null,
             ],
+            [
+                'id' => 8,
+                'name' => 'Get One Table',
+                'key' => 'get-one-table',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
+            ],
+            [
+                'id' => 9,
+                'name' => 'Get All Table by Restaurant ID',
+                'key' => 'get-all-table-by-restaurant-id',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
+            ],
+            [
+                'id' => 10,
+                'name' => 'Update Table',
+                'key' => 'update-table',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
+            ],
+            
         ]);
     }
 }
