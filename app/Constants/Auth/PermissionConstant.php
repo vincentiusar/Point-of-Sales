@@ -27,4 +27,12 @@ class PermissionConstant
     const ADD_FOOD = 'add-food';
     const UPDATE_FOOD = 'update-food';
     const DELETE_FOOD = 'delete-food';
+    
+    // TABLE PERMISSION
+    const GET_ONE_TRANSACTION = 'get-one-transaction';
+    const GET_ONE_TRANSACTION_ON_TABLE_ID = 'get-one-transaction-on-table-id';
+    const GET_ALL_TRANSACTION_BY_RESTAURANT_ID = 'get-all-transaction-by-restaurant-id';
+    const ADD_TRANSACTION = 'add-transaction';
+    const UPDATE_TRANSACTION = 'update-transaction';
+    const DELETE_TRANSACTION = 'delete-transaction';
 }
