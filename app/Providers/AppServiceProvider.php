@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Services\Auth\AuthService;
 use App\Services\Auth\impl\AuthServiceImpl;
+use App\Services\Food\FoodService;
+use App\Services\Food\impl\FoodServiceImpl;
 use App\Services\Restaurant\impl\RestaurantServiceImpl;
 use App\Services\Restaurant\RestaurantService;
 use App\Services\Table\impl\TableServiceImpl;
@@ -22,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(AuthService::class, AuthServiceImpl::class);
         $this->app->bind(RestaurantService::class, RestaurantServiceImpl::class);
         $this->app->bind(TableService::class, TableServiceImpl::class);
+        $this->app->bind(FoodService::class, FoodServiceImpl::class);
     }
 
     /**

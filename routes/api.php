@@ -2,6 +2,7 @@
 
 use App\Constants\Auth\PermissionConstant;
 use App\Http\Controllers\auth\UserAuthController;
+use App\Http\Controllers\Food\FoodController;
 use App\Http\Controllers\Restaurant\RestaurantController;
 use App\Http\Controllers\Table\TableController;
 use App\Http\Controllers\User\UserController;
@@ -43,21 +44,29 @@ Route::middleware(['cors', 'json.response', 'auth:api'])->group(function () {
         Route::middleware(['permission:' . PermissionConstant::DELETE_RESTAURANT . '|' . PermissionConstant::IS_SUPER_ADMIN, 'is_the_owner'])->delete('/delete/{restaurant_id}', [RestaurantController::class, 'delete']);
     
         // RESTAURANT TABLE REQUEST
-        Route::middleware(['permission:' . PermissionConstant::GET_ALL_TABLE_BY_RESTAURANT_ID, 'is_the_owner'])->get('/{restaurant_id}/table', [TableController::class, 'getAllByRestaurantID']);
         
         Route::group(['prefix' => '/{restaurant_id}/table'], function () {
+            Route::middleware(['permission:' . PermissionConstant::GET_ALL_TABLE_BY_RESTAURANT_ID, 'is_the_owner'])->get('/', [TableController::class, 'getAllByRestaurantID']);
             Route::middleware(['permission:' . PermissionConstant::GET_ONE_TABLE, 'is_the_owner'])->get('/{id}', [TableController::class, 'show']);
             Route::middleware(['permission:' . PermissionConstant::ADD_TABLE, 'is_the_owner'])->post('/add', [TableController::class, 'create']);
             Route::middleware(['permission:' . PermissionConstant::UPDATE_TABLE, 'is_the_owner'])->put('/update/{id}', [TableController::class, 'update']);
             Route::middleware(['permission:' . PermissionConstant::DELETE_TABLE, 'is_the_owner'])->delete('/delete/{id}', [TableController::class, 'delete']);
         });
 
-        // Route::group(['prefix' => '/{restaurant_id}/food'], function () {
-
-        // });
+        Route::group(['prefix' => '/{restaurant_id}/food'], function () {
+            Route::middleware('permission:' . PermissionConstant::GET_ALL_FOOD_BY_RESTAURANT_ID, 'is_the_owner')->get('/', [FoodController::class, 'getAllByRestaurantID']);
+            Route::middleware('permission:' . PermissionConstant::GET_ONE_FOOD, 'is_the_owner')->get('/{id}', [FoodController::class, 'show']);
+            Route::middleware('permission:' . PermissionConstant::ADD_FOOD, 'is_the_owner')->post('/add', [FoodController::class, 'create']);
+            Route::middleware('permission:' . PermissionConstant::UPDATE_FOOD, 'is_the_owner')->put('/update/{id}', [FoodController::class, 'update']);
+            Route::middleware('permission:' . PermissionConstant::DELETE_FOOD, 'is_the_owner')->delete('/delete/{id}', [FoodController::class, 'delete']);
+        });
     });
     
     Route::group(['prefix' => '/table'], function () {
         Route::middleware(['permission:' . PermissionConstant::IS_SUPER_ADMIN])->get('/', [TableController::class, 'index']);
+    });
+
+    Route::group(['prefix' => '/food'], function () {
+        Route::middleware(['permission:' . PermissionConstant::IS_SUPER_ADMIN])->get('/', [FoodController::class, 'index']);
     });
 });

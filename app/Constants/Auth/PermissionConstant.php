@@ -20,4 +20,11 @@ class PermissionConstant
     const ADD_TABLE = 'add-table';
     const UPDATE_TABLE = 'update-table';
     const DELETE_TABLE = 'delete-table';
+    
+    // TABLE PERMISSION
+    const GET_ONE_FOOD = 'get-one-food';
+    const GET_ALL_FOOD_BY_RESTAURANT_ID = 'get-all-food-by-restaurant-id';
+    const ADD_FOOD = 'add-food';
+    const UPDATE_FOOD = 'update-food';
+    const DELETE_FOOD = 'delete-food';
 }
