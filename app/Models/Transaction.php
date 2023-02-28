@@ -45,7 +45,7 @@ class Transaction extends Model
 
     public function restaurant(): BelongsTo
     {
-        return $this->belongsTo(Restaurant::class, 'id', 'restaurant_id');
+        return $this->belongsTo(Restaurant::class, 'restaurant_id', 'id');
     }
 
     public function table(): BelongsTo
