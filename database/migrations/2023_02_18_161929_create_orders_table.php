@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('transaction_id')->constrained('transactions')->onDelete('cascade');
             $table->unsignedDouble('total');
             $table->unsignedBigInteger('quantity');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

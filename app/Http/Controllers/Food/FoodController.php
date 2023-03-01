@@ -10,7 +10,7 @@ use App\Http\Requests\Food\GetAllByRestaurantIdRequest;
 use App\Http\Requests\Food\GetFoodRequest;
 use App\Http\Requests\Food\UpdateFoodRequest;
 use App\Http\Resources\Food\AllFoodCollection;
-use App\Http\Resources\Food\DetailResouce;
+use App\Http\Resources\Food\DetailResource;
 use App\Http\Resources\Food\IndexCollection;
 use App\Services\Food\FoodService;
 use App\Shareds\ResponseStatus;
@@ -68,7 +68,7 @@ class FoodController extends Controller
         try {
             $data = $this->foodService->find($request->id);
 
-            return ResponseStatus::response(new DetailResouce($data));
+            return ResponseStatus::response(new DetailResource($data));
         } catch (Error $err) {
             return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
         }
@@ -84,7 +84,7 @@ class FoodController extends Controller
         try {
             $data = $this->foodService->add($request);
 
-            return ResponseStatus::response(new DetailResouce($data));
+            return ResponseStatus::response(new DetailResource($data));
         } catch (Error $err) {
             return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
         }
@@ -100,7 +100,7 @@ class FoodController extends Controller
         try {
             $data = $this->foodService->updates($request);
 
-            return ResponseStatus::response(new DetailResouce($data));
+            return ResponseStatus::response(new DetailResource($data));
         } catch (Error $err) {
             return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
         }
@@ -116,7 +116,7 @@ class FoodController extends Controller
         try {
             $data = $this->foodService->deletes($request);
 
-            return ResponseStatus::response(new DetailResouce($data));
+            return ResponseStatus::response(new DetailResource($data));
         } catch (Error $err) {
             return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
         }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model
@@ -40,8 +41,13 @@ class Transaction extends Model
      * @var array
      */
     protected $casts = [
-
+        'total' => 'integer',
     ];
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'transaction_id', 'id');
+    }
 
     public function restaurant(): BelongsTo
     {
