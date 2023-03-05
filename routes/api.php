@@ -75,13 +75,14 @@ Route::middleware(['cors', 'json.response', 'auth:api'])->group(function () {
             Route::middleware('permission:' . PermissionConstant::GET_ALL_TRANSACTION_BY_RESTAURANT_ID, 'is_the_owner')->get('/', [TransactionController::class, 'getAllByRestaurantID']);
             Route::middleware('permission:' . PermissionConstant::GET_ONE_TRANSACTION, 'is_the_owner')->get('/{id}', [TransactionController::class, 'show']);
             Route::middleware('permission:' . PermissionConstant::ADD_TRANSACTION, 'is_the_owner')->post('/add', [TransactionController::class, 'create']);
-            Route::middleware('permission:' . PermissionConstant::UPDATE_TRANSACTION, 'is_the_owner')->put('/update/{id}', [TransactionController::class, 'update']);
+            Route::middleware('permission:' . PermissionConstant::PAYMENT, 'is_the_owner')->put('/payment/{id}', [TransactionController::class, 'payment']);
+            Route::middleware('permission:' . PermissionConstant::UNDO_PAYMENT, 'is_the_owner')->put('/undopayment/{id}', [TransactionController::class, 'undoPayment']);
             Route::middleware('permission:' . PermissionConstant::DELETE_TRANSACTION, 'is_the_owner')->delete('/delete/{id}', [TransactionController::class, 'delete']);
 
             Route::group(['prefix' => '/{transaction_id}/order'], function () {
                 Route::middleware('permission:' . PermissionConstant::GET_ALL_ORDER_BY_TRANSACTION_ID, 'is_the_owner')->get('/', [OrderController::class, 'getAllByTransactionID']);
                 Route::middleware('permission:' . PermissionConstant::ADD_ORDER, 'is_the_owner')->post('/add', [OrderController::class, 'create']);
-                Route::middleware('permission:' . PermissionConstant::UPDATE_ORDER, 'is_the_owner')->put('/update/{id}', [OrderController::class, 'update']);
+                Route::middleware('permission:' . PermissionConstant::UPDATE_ORDER, 'is_the_owner')->put('/update', [OrderController::class, 'update']);
                 Route::middleware('permission:' . PermissionConstant::DELETE_ORDER, 'is_the_owner')->delete('/delete/{id}', [OrderController::class, 'delete']);
             });
         });

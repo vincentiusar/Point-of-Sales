@@ -24,6 +24,7 @@ class Order extends Model
         'transaction_id',
         'total',
         'quantity',
+        'note',
     ];
 
     /**

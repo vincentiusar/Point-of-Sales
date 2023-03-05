@@ -56,6 +56,6 @@ class Transaction extends Model
 
     public function table(): BelongsTo
     {
-        return $this->belongsTo(Table::class, 'id', 'table_id');
+        return $this->belongsTo(Table::class, 'table_id', 'id');
     }
 }

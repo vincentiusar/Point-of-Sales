@@ -6,6 +6,8 @@ use App\Http\Requests\DataTableRequest;
 use App\Http\Requests\Transaction\ActiveTransactionRequest;
 use App\Http\Requests\Transaction\AddTransactionRequest;
 use App\Http\Requests\Transaction\GetAllByRestaurantIdRequest;
+use App\Http\Requests\Transaction\PaymentRequest;
+use App\Http\Requests\Transaction\UndoPaymentRequest;
 
 interface TransactionService
 {
@@ -14,6 +16,7 @@ interface TransactionService
     public function getAllByRestaurantID(GetAllByRestaurantIdRequest $request);
     public function activeTransactionOnTable(ActiveTransactionRequest $request);
     public function add(AddTransactionRequest $request);
-    // public function updates(UpdateTableRequest $request);
+    public function payment(PaymentRequest $request);
+    public function undoPayment(UndoPaymentRequest $request);
     // public function deletes(DeleteTableRequest $request);
 }

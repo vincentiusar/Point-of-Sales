@@ -33,7 +33,8 @@ class PermissionConstant
     const GET_ONE_TRANSACTION_ON_TABLE_ID = 'get-one-transaction-on-table-id';
     const GET_ALL_TRANSACTION_BY_RESTAURANT_ID = 'get-all-transaction-by-restaurant-id';
     const ADD_TRANSACTION = 'add-transaction';
-    const UPDATE_TRANSACTION = 'update-transaction';
+    const PAYMENT = 'payment';
+    const UNDO_PAYMENT = 'undo-payment';
     const DELETE_TRANSACTION = 'delete-transaction';
 
     // TRANSACTION PERMISSION

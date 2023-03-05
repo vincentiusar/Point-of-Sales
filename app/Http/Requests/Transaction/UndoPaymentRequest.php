@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Order;
+namespace App\Http\Requests\Transaction;
 
+use App\Constants\Transaction\TransactionConstant;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateOrderRequest extends FormRequest
+class UndoPaymentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,10 +22,9 @@ class UpdateOrderRequest extends FormRequest
      */
     public function rules(): array
     {
+        $this['transaction_id'] = $this->route('id');
         return [
-            'orders' => 'required|array|min:0',
-            'orders.*.order_id' => 'required|integer|exists:orders,id,deleted_at,NULL',
-            'orders.*.quantity' => 'required|integer|min:1',
+            'transaction_id' => 'required|integer|exists:transactions,id,deleted_at,NULL',
         ];
     }
 }
