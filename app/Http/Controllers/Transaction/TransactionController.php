@@ -8,6 +8,9 @@ use App\Http\Requests\Transaction\ActiveTransactionRequest;
 use App\Http\Requests\Transaction\AddTransactionRequest;
 use App\Http\Requests\Transaction\GetAllByRestaurantIdRequest;
 use App\Http\Requests\Transaction\GetTransactionRequest;
+use App\Http\Requests\Transaction\PaymentRequest;
+use App\Http\Requests\Transaction\UndoPaymentRequest;
+use App\Http\Requests\Transaction\UpdateTransactionRequest;
 use App\Http\Resources\Transaction\AllTransactionCollection;
 use App\Http\Resources\Transaction\DetailResource;
 use App\Http\Resources\Transaction\IndexCollection;
@@ -105,20 +108,36 @@ class TransactionController extends Controller
         }
     }
     
-    // /**
-    //  * Function to Update One Transaction
-    //  * 
-    //  * @param AddTransactionRequest $request
-    //  * @return ResponseStatus
-    //  */
-    // public function update(AddTransactionRequest $request) {
-    //     try {
-    //         $data = $this->transactionService->add($request);
+    /**
+     * Function to Pay One Transaction
+     * 
+     * @param PaymentRequest $request
+     * @return ResponseStatus
+     */
+    public function payment(PaymentRequest $request) {
+        try {
+            $data = $this->transactionService->payment($request);
 
-    //         return ResponseStatus::response(new DetailResource($data->data), $data?->status ?? null, $data?->statusCode ?? 200);
-    //     } catch (Error $err) {
-    //         return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
-    //     }
-    // }
+            return ResponseStatus::response(new DetailResource($data->data), $data?->status ?? null, $data?->statusCode ?? 200);
+        } catch (Error $err) {
+            return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
+        }
+    }
+
+    /**
+     * Function to Update One Transaction
+     * 
+     * @param UndoPaymentRequest $request
+     * @return ResponseStatus
+     */
+    public function undoPayment(UndoPaymentRequest $request) {
+        try {
+            $data = $this->transactionService->undoPayment($request);
+
+            return ResponseStatus::response(new DetailResource($data->data), $data?->status ?? null, $data?->statusCode ?? 200);
+        } catch (Error $err) {
+            return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
+        }
+    }
 
 }

@@ -2,10 +2,14 @@
 
 namespace App\Services\Transaction\impl;
 
+use App\Constants\Table\TableConstant;
+use App\Constants\Transaction\TransactionConstant;
 use App\Http\Requests\DataTableRequest;
 use App\Http\Requests\Transaction\ActiveTransactionRequest;
 use App\Http\Requests\Transaction\AddTransactionRequest;
 use App\Http\Requests\Transaction\GetAllByRestaurantIdRequest;
+use App\Http\Requests\Transaction\PaymentRequest;
+use App\Http\Requests\Transaction\UndoPaymentRequest;
 use App\Models\Transaction;
 use App\Services\Transaction\TransactionService;
 use App\Shareds\BaseService;
@@ -89,6 +93,7 @@ class TransactionServiceImpl extends BaseService implements TransactionService
                 ])
                 ->where('table_id', $request->id)
                 ->where('status', 'on going')
+                ->latest('created_at')
                 ->first();
 
         return $data ? 
@@ -128,8 +133,62 @@ class TransactionServiceImpl extends BaseService implements TransactionService
             ]
         );
 
+        $data->table->update(['status' => TableConstant::ONGOING]);
+
         return (object) [
             'data' => $data
+        ];
+    }
+
+    public function payment(PaymentRequest $request) {
+        $transaction = $this->find($request->transaction_id);
+
+        if ($transaction->status == TransactionConstant::PAYED) {
+            return (object) [
+                'data' => null,
+                'status' => 'Transaction have been payed. Please undo the transaction first.',
+                'statusCode' => 422
+            ];
+        }
+
+        $transaction->update([
+            'status' => TransactionConstant::PAYED,
+            'payment' => $request->payment,
+        ]);
+
+        $activeTransaction = $this->transaction
+                                ->where('table_id', $transaction->table_id)
+                                ->where('status', 'on going')
+                                ->first();
+
+        if (!$activeTransaction)
+            $transaction->table->update(['status' => TableConstant::OPEN]);
+
+        return (object) [
+            'data' => $transaction
+        ];
+    }
+
+    public function undoPayment(UndoPaymentRequest $request) {
+        $transaction = $this->find($request->transaction_id);
+
+        if ($transaction->status == TransactionConstant::ONGOING) {
+            return (object) [
+                'data' => null,
+                'status' => 'Transaction is still on going.',
+                'statusCode' => 422
+            ];
+        }
+
+        $transaction->update([
+            'status' => TransactionConstant::ONGOING,
+            'payment' => null,
+        ]);
+
+        $transaction->table->update(['status' => TableConstant::ONGOING]);
+
+        return (object) [
+            'data' => $transaction
         ];
     }
 }
