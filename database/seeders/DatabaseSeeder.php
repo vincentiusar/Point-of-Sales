@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             RestaurantSeeder::class,
             UserSeeder::class,
             TableSeeder::class,
+
+            FoodSeeder::class,
             
         ]);
     }
