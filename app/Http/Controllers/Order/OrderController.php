@@ -115,7 +115,7 @@ class OrderController extends Controller
         try {
             $data = $this->orderService->updates($request);
 
-            return ResponseStatus::response(new DetailResource($data));
+            return ResponseStatus::response(new DetailResource($data->data), $data?->status ?? null, $data?->statusCode ?? 200);
         } catch (Error $err) {
             return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
         }

@@ -21,9 +21,10 @@ class UpdateOrderRequest extends FormRequest
      */
     public function rules(): array
     {
-        $this['order_id'] = $this->route('id');
         return [
-            'order_id' => 'required|integer|exists:orders,id,deleted_at,NULL'
+            'orders' => 'required|array|min:0',
+            'orders.*.order_id' => 'required|integer|exists:orders,id,deleted_at,NULL',
+            'orders.*.quantity' => 'required|integer|min:1',
         ];
     }
 }

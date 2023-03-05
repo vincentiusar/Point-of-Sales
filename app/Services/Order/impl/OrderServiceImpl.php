@@ -139,9 +139,10 @@ class OrderServiceImpl extends BaseService implements OrderService
         $transaction = $this->transaction
                         ->with(['orders.food'])
                         ->where('id', $request->transaction_id)
+                        ->where('status', TransactionConstant::ONGOING)
                         ->first();
 
-        if ($transaction->status != TransactionConstant::ONGOING)
+        if (!$transaction)
             return (object) [
                 'data' => null,
                 'status' => 'No Active Transaction',
@@ -160,24 +161,45 @@ class OrderServiceImpl extends BaseService implements OrderService
                     'status' => "$food->name ($food->id) is Out of Stock. (Remaining: $food->quantity)",
                     'statusCode' => 422
                 ];
+
+            $prevOrdered = array_search($order->food_id, array_column($transaction->orders->toArray(), 'food_id'));
+            if ($prevOrdered !== false && $transaction->orders[$prevOrdered]?->quantity > $order->quantity) {
+                return (object) [
+                    'data' => null,
+                    'status' => "$food->name ($food->id) Cannot be cancel. Before: " . $transaction->orders[$prevOrdered]->quantity . ", Now: $order->quantity",
+                    'statusCode' => 422
+                ];
+            }
         }
 
+        $transaction->total = 0;
         foreach ($request->orders as $order) {
             $order = (object) $order;
             $food = $foods[array_search($order->food_id, array_column($foods->toArray(), 'id'))];
 
-            $transaction->orders()->create([
-                'restaurant_id' => (int) $request->restaurant_id,
-                'transaction_id' => (int) $request->transaction_id,
-                'food_id' => $order->food_id,
-                'status' => 'on process',
-                'total' => $order->quantity * $food->price,
-                'quantity' => $order->quantity,
-                'note' => $order->note,
-            ]);
-    
-            $transaction->total = $transaction->total + $order->quantity * $food->price;
-            $food->quantity -= $order->quantity;
+            $transaction->orders()->updateOrCreate(
+                [
+                    'restaurant_id' => (int) $request->restaurant_id,
+                    'transaction_id' => (int) $request->transaction_id,
+                    'food_id' => $order->food_id,
+                ],
+                [
+                    'status' => 'on process',
+                    'total' => $order->quantity * $food->price,
+                    'quantity' => $order->quantity,
+                    'note' => $order->note,
+                ]
+            );
+
+            $transaction->total += $order->quantity * $food->price;
+
+            $updateValueFood = array_search($food->id, array_column($transaction->orders->toArray(), 'food_id'));
+            if ($updateValueFood !== false) {
+                $food->quantity += ($transaction->orders[$updateValueFood]?->quantity ?? 0) - $order->quantity;
+            } else {
+                $food->quantity -= $order->quantity;
+            }
+
             $food->save();
         }
 
@@ -189,14 +211,92 @@ class OrderServiceImpl extends BaseService implements OrderService
     }
 
     public function updates(UpdateOrderRequest $request) {
-        $order = $this->find($request->order_id);
-        $order->update($request->all());
+        $transaction = $this->transaction
+                        ->with(['orders.food'])
+                        ->where('id', $request->transaction_id)
+                        ->where('status', TransactionConstant::ONGOING)
+                        ->first();
 
-        return $order;
+        if (!$transaction)
+            return (object) [
+                'data' => null,
+                'status' => 'No Active Transaction',
+                'statusCode' => 404
+            ];
+
+        $foods = $this->food->whereIn('id', collect($transaction->orders)->pluck('food_id'))->get();
+        
+        foreach ($request->orders as $order) {
+            $order = (object) $order;
+            $order = array_search($order->order_id, array_column($transaction->orders->toArray(), 'id'));
+
+            if ($order !== false) {
+                $order = $transaction->orders[$order];
+            }
+            $food = $foods[array_search($order->food_id, array_column($foods->toArray(), 'id'))];   // find index of foods that have food_id = order_id
+
+            if ($food->quantity - $order->quantity < 0)
+                return (object) [
+                    'data' => null,
+                    'status' => "$food->name ($food->id) is Out of Stock. (Remaining: $food->quantity)",
+                    'statusCode' => 422
+                ];
+        }
+
+        $transaction->total = 0;
+        foreach ($request->orders as $value) {
+            $value = (object) $value;
+            $order = array_search($value->order_id, array_column($transaction->orders->toArray(), 'id'));
+
+            if ($order !== false) {
+                $order = $transaction->orders[$order];
+            }
+            $food = $foods[array_search($order->food_id, array_column($foods->toArray(), 'id'))];
+            
+            $transaction->total += $value->quantity * $food->price;
+            
+            $updateValueFood = array_search($food->id, array_column($transaction->orders->toArray(), 'food_id'));
+            if ($updateValueFood !== false) {
+                $food->quantity += ($transaction->orders[$updateValueFood]?->quantity ?? 0) - $value->quantity;
+            } else {
+                $food->quantity -= $value->quantity;
+            }
+            
+            $order->update(
+                [
+                    'status' => 'on process',
+                    'total' => $value->quantity * $food->price,
+                    'quantity' => $value->quantity,
+                ]
+            );
+
+            $food->save();
+        }
+
+        $transaction->save();
+
+        return (object) [
+            'data' => $transaction
+        ];
     }
 
     public function deletes(DeleteOrderRequest $request) {
         $order = $this->find($request->order_id);
+
+        if ($order->transaction->status != TransactionConstant::ONGOING) {
+            return (object) [
+                'data' => null,
+                'status' => 'No Active Transaction',
+                'statusCode' => 404
+            ];
+        }
+
+        $order->food->quantity += $order->quantity;
+        $order->food->save();
+
+        $order->transaction->total -= $order->food->price * $order->quantity;
+        $order->transaction->save();
+
         $order->delete($request->order_id);
 
         return $order;
