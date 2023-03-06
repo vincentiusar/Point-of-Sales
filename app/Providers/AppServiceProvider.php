@@ -16,6 +16,7 @@ use App\Services\Transaction\impl\TransactionServiceImpl;
 use App\Services\Transaction\TransactionService;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class AppServiceProvider extends ServiceProvider
@@ -38,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Schema::defaultStringLength(191);
         Factory::guessFactoryNamesUsing(function (string $model_name) {
             $namespace = '\\Database\\Factories\\';
             $model_name = Str::afterLast($model_name, '\\');
