@@ -37,6 +37,14 @@ class RoleSeeder extends Seeder
                 'created_at' => null,
                 'updated_at' => null,
                 'deleted_at' => null,
+            ],
+            [
+                'id' => 4,
+                'name' => 'User',
+                'key' => 'user',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ]
         ]);
     }

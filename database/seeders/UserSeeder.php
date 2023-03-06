@@ -47,6 +47,17 @@ class UserSeeder extends Seeder
                 'created_at' => null,
                 'updated_at' => null,
                 'deleted_at' => null,
+            ],
+            [
+                'id' => 4,
+                'name' => 'guest',
+                'username' => 'guest',
+                'password' => Hash::make('guest', ['rounds' => '10']),
+                'role_id' => 4,
+                'restaurant_id' => 1,
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
             ]
         ]);
     }
