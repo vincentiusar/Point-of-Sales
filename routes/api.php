@@ -8,7 +8,9 @@ use App\Http\Controllers\Restaurant\RestaurantController;
 use App\Http\Controllers\Table\TableController;
 use App\Http\Controllers\Transaction\TransactionController;
 use App\Http\Controllers\User\UserController;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +27,9 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::get('/test', );
+Route::get('/test', function() {
+    
+});
 
 Route::middleware(['cors', 'json.response'])->group(function () {    
     Route::post('/login', [UserAuthController::class, 'login']);
@@ -58,8 +62,10 @@ Route::middleware(['cors', 'json.response', 'auth:api'])->group(function () {
         });
 
         Route::group(['prefix' => '/{restaurant_id}/food'], function () {
+            // Customer
             Route::middleware('permission:' . PermissionConstant::GET_ALL_FOOD_BY_RESTAURANT_ID, 'is_the_owner')->get('/', [FoodController::class, 'getAllByRestaurantID']);
             Route::middleware('permission:' . PermissionConstant::GET_ONE_FOOD, 'is_the_owner')->get('/{id}', [FoodController::class, 'show']);
+
             Route::middleware('permission:' . PermissionConstant::ADD_FOOD, 'is_the_owner')->post('/add', [FoodController::class, 'create']);
             Route::middleware('permission:' . PermissionConstant::UPDATE_FOOD, 'is_the_owner')->put('/update/{id}', [FoodController::class, 'update']);
             Route::middleware('permission:' . PermissionConstant::DELETE_FOOD, 'is_the_owner')->delete('/delete/{id}', [FoodController::class, 'delete']);
@@ -81,7 +87,10 @@ Route::middleware(['cors', 'json.response', 'auth:api'])->group(function () {
 
             Route::group(['prefix' => '/{transaction_id}/order'], function () {
                 Route::middleware('permission:' . PermissionConstant::GET_ALL_ORDER_BY_TRANSACTION_ID, 'is_the_owner')->get('/', [OrderController::class, 'getAllByTransactionID']);
+                
+                // Customer
                 Route::middleware('permission:' . PermissionConstant::ADD_ORDER, 'is_the_owner')->post('/add', [OrderController::class, 'create']);
+
                 Route::middleware('permission:' . PermissionConstant::UPDATE_ORDER, 'is_the_owner')->put('/update', [OrderController::class, 'update']);
                 Route::middleware('permission:' . PermissionConstant::DELETE_ORDER, 'is_the_owner')->delete('/delete/{id}', [OrderController::class, 'delete']);
             });

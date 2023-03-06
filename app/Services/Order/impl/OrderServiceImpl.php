@@ -17,6 +17,7 @@ use App\Services\Order\OrderService;
 use App\Shareds\BaseService;
 use App\Shareds\Paginator;
 use Illuminate\Support\Facades\DB;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class OrderServiceImpl extends BaseService implements OrderService
 {
@@ -141,6 +142,14 @@ class OrderServiceImpl extends BaseService implements OrderService
                         ->where('id', $request->transaction_id)
                         ->where('status', TransactionConstant::ONGOING)
                         ->first();
+
+        if (auth()->user()->role_id == 4 && $transaction->table->session_id != JWTAuth::getToken()) {
+            return (object) [
+                'data' => null,
+                'status' => 'Unauthorized',
+                'statusCode' => 401
+            ];
+        }
 
         if (!$transaction)
             return (object) [
