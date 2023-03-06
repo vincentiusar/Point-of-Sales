@@ -11,9 +11,11 @@ use App\Http\Requests\Transaction\GetAllByRestaurantIdRequest;
 use App\Http\Requests\Transaction\PaymentRequest;
 use App\Http\Requests\Transaction\UndoPaymentRequest;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Services\Transaction\TransactionService;
 use App\Shareds\BaseService;
 use App\Shareds\Paginator;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class TransactionServiceImpl extends BaseService implements TransactionService
 {
@@ -24,6 +26,7 @@ class TransactionServiceImpl extends BaseService implements TransactionService
 
     public function __construct(
         private Transaction $transaction,
+        private User $user,
     )
     {
         parent::__construct($transaction);
@@ -96,6 +99,14 @@ class TransactionServiceImpl extends BaseService implements TransactionService
                 ->latest('created_at')
                 ->first();
 
+        if (auth()->user()->role_id == 4 && $data->table->session_id != JWTAuth::getToken()) {
+            return (object) [
+                'data' => null,
+                'status' => 'Unauthorized',
+                'statusCode' => 401
+            ];
+        }
+
         return $data ? 
             (object) [
                 'data' => $data,
@@ -133,7 +144,9 @@ class TransactionServiceImpl extends BaseService implements TransactionService
             ]
         );
 
-        $data->table->update(['status' => TableConstant::ONGOING]);
+        $data['token'] = auth()->login($this->user->where('role_id', 4)->where('restaurant_id', $request->restaurant_id)->first());
+        
+        $data->table->update(['status' => TableConstant::ONGOING, 'session_id' => $data['token']]);
 
         return (object) [
             'data' => $data
