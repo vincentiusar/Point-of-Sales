@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('foods', function (Blueprint $table) {
+        Schema::create('food', function (Blueprint $table) {
             $table->id();
             $table->foreignId('restaurant_id')->constrained('restaurants')->onDelete('cascade');
             $table->string('name');
@@ -19,7 +19,7 @@ return new class extends Migration
             $table->bigInteger('quantity');
             $table->unsignedFloat('price');
             $table->enum('category', ['dessert', 'main dishes', 'appetizer', 'beverage']);
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('foods');
+        Schema::dropIfExists('food');
     }
 };

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Restaurant extends Model
@@ -19,8 +20,6 @@ class Restaurant extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id',
-        'admin_id',
         'name',
         'description',
         'address',
@@ -32,7 +31,7 @@ class Restaurant extends Model
      * @var array
      */
     protected $hidden = [
-
+        
     ];
 
     /**
@@ -44,14 +43,9 @@ class Restaurant extends Model
 
     ];
 
-    public function users(): HasMany
+    public function admin(): HasOne
     {
-        return $this->hasMany(User::class, 'restaurant_id', 'id');
-    }
-
-    public function admin(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
+        return $this->hasOne(User::class, 'restaurant_id', 'id')->where('role_id', 2);
     }
 
     public function tables(): HasMany

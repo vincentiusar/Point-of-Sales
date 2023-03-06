@@ -11,7 +11,7 @@ class UpdateRestaurantRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +21,12 @@ class UpdateRestaurantRequest extends FormRequest
      */
     public function rules(): array
     {
+        $this['restaurant_id'] = auth()->user()->restaurant_id;
         return [
-            //
+            'restaurant_id' => 'integer|required|exists:restaurants,id,deleted_at,NULL',
+            'name' => 'string',
+            'description' => 'string',
+            'address' => 'string'
         ];
     }
 }

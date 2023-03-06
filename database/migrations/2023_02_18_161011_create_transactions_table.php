@@ -16,8 +16,9 @@ return new class extends Migration
             $table->foreignId('restaurant_id')->constrained('restaurants')->onDelete('cascade');
             $table->foreignId('table_id')->constrained('tables')->onDelete('cascade');
             $table->enum('status', ['on going', 'payed']);
-            $table->enum('payment', ['cash', 'ovo', 'm-banking']);
+            $table->enum('payment', ['cash', 'ovo', 'm-banking'])->nullable();
             $table->unsignedDouble('total');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

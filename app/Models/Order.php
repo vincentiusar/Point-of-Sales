@@ -24,6 +24,7 @@ class Order extends Model
         'transaction_id',
         'total',
         'quantity',
+        'note',
     ];
 
     /**
@@ -46,16 +47,16 @@ class Order extends Model
 
     public function food(): BelongsTo
     {
-        return $this->belongsTo(Food::class, 'id', 'food_id');
+        return $this->belongsTo(Food::class, 'food_id');
     }
 
     public function restaurant(): BelongsTo
     {
-        return $this->belongsTo(Restaurant::class, 'id', 'restaurant_id');
+        return $this->belongsTo(Restaurant::class, 'restaurant_id');
     }
 
     public function transaction(): BelongsTo
     {
-        return $this->belongsTo(Transaction::class, 'id', 'transaction_id');
+        return $this->belongsTo(Transaction::class, 'transaction_id');
     }
 }

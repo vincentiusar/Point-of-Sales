@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('food_id')->constrained('foods')->onDelete('cascade');
+            $table->foreignId('food_id')->constrained('food')->onDelete('cascade');
             $table->foreignId('restaurant_id')->constrained('restaurants')->onDelete('cascade');
             $table->enum('status', ['on process', 'served', 'cancelled']);
             $table->foreignId('transaction_id')->constrained('transactions')->onDelete('cascade');
             $table->unsignedDouble('total');
             $table->unsignedBigInteger('quantity');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

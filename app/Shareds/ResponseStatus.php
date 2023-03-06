@@ -17,7 +17,7 @@ class ResponseStatus
      * @param int $statusCode
      * @return JsonResponse
      */
-    public static function response(mixed $data, string $status = 'success', int $statusCode = 200): JsonResponse
+    public static function response(mixed $data, ?string $status = 'success', ?int $statusCode = 200): JsonResponse
     {
         return response()->json([
             'status' => $status ?? 'success',

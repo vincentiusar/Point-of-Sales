@@ -16,6 +16,14 @@ class RoleSeeder extends Seeder
         DB::table('roles')->insert([
             [
                 'id' => 1,
+                'name' => 'super administrator',
+                'key' => 'super-admin',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
+            ],
+            [
+                'id' => 2,
                 'name' => 'administrator',
                 'key' => 'admin',
                 'created_at' => null,
@@ -23,9 +31,17 @@ class RoleSeeder extends Seeder
                 'deleted_at' => null,
             ],
             [
-                'id' => 2,
+                'id' => 3,
                 'name' => 'Cashier',
                 'key' => 'cashier',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
+            ],
+            [
+                'id' => 4,
+                'name' => 'User',
+                'key' => 'user',
                 'created_at' => null,
                 'updated_at' => null,
                 'deleted_at' => null,
