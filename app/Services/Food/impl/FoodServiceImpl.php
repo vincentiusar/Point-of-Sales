@@ -6,6 +6,7 @@ use App\Http\Requests\DataTableRequest;
 use App\Http\Requests\Food\AddFoodRequest;
 use App\Http\Requests\Food\DeleteFoodRequest;
 use App\Http\Requests\Food\GetAllByRestaurantIdRequest;
+use App\Http\Requests\Food\GetMultipleFood;
 use App\Http\Requests\Food\UpdateFoodRequest;
 use App\Models\Food;
 use App\Services\Food\FoodService;
@@ -16,7 +17,9 @@ class FoodServiceImpl extends BaseService implements FoodService
 {
 
     const ALLOW_TO_SORT_AND_SEARCH = [
+        'name',
         'status',
+        'category'
     ];
 
     public function __construct(
@@ -59,6 +62,9 @@ class FoodServiceImpl extends BaseService implements FoodService
                     ->when($request->search, function ($query) use ($request) {
                         $query->where('name', 'like', "%$request->search%");
                     })
+                    ->when($request->category, function ($query) use ($request) {
+                        return $query->where('category', $request->category);
+                    })
                     ->orderBy($sort, $order);
         
         return Paginator::paginate($queryData, $request->page, $request->per_page);
@@ -83,6 +89,9 @@ class FoodServiceImpl extends BaseService implements FoodService
                     ->when($request->search, function ($query) use ($request) {
                         $query->where('name', 'like', "%$request->search%");
                     })
+                    ->when($request->category, function ($query) use ($request) {
+                        return $query->where('category', $request->category);
+                    })
                     ->orderBy($sort, $order);
         
         return Paginator::paginate($queryData, $request->page, $request->per_page);
@@ -90,6 +99,15 @@ class FoodServiceImpl extends BaseService implements FoodService
 
     public function find(int $id) {
         return $this->findById($id);
+    }
+
+    public function findMany(GetMultipleFood $request) {
+        $ids = collect($request->foods)->pluck('food_id');
+
+        $queryData = $this->food
+                    ->whereIn('id', $ids);
+
+        return Paginator::paginate($queryData, $request->page, 1000);
     }
 
     public function add(AddFoodRequest $request) {

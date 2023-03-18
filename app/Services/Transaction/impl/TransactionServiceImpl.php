@@ -86,6 +86,7 @@ class TransactionServiceImpl extends BaseService implements TransactionService
 
     public function activeTransactionOnTable(ActiveTransactionRequest $request) {
         $data = $this->transaction
+                ->with('restaurant')
                 ->select([
                     'id',
                     'restaurant_id',
@@ -150,6 +151,21 @@ class TransactionServiceImpl extends BaseService implements TransactionService
 
         return (object) [
             'data' => $data
+        ];
+    }
+
+    public function refreshToken(AddTransactionRequest $request) {
+        $activeTransaction = $this->transaction
+                                ->where('table_id', $request->table_id)
+                                ->where('status', 'on going')
+                                ->first();
+
+        $activeTransaction->token = auth()->login($this->user->where('role_id', 4)->where('restaurant_id', $request->restaurant_id)->first());
+
+        $activeTransaction->table->update(['session_id' => $activeTransaction->token]);
+
+        return (object) [
+            'data' => $activeTransaction
         ];
     }
 
