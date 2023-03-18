@@ -67,7 +67,7 @@ class OrderController extends Controller
         try {
             $data = $this->orderService->getAllByTransactionID($request);
 
-            return ResponseStatus::response(['items' => new IndexCollection($data->items), 'meta' => $data->meta]);
+            return ResponseStatus::response(['items' => new IndexCollection($data->items), 'meta' => $data?->meta ?? []], $data?->status ?? null, $data?->statusCode ?? 200);
         } catch (Error $err) {
             return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
         }

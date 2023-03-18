@@ -16,6 +16,7 @@ class TableSeeder extends Seeder
         DB::table('tables')->insert([
             'id' => 1,
             'restaurant_id' => 1,
+            'table_number' => 1,
             'status' => 'open',
             'created_at' => null,
             'updated_at' => null,

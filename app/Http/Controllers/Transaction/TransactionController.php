@@ -91,7 +91,7 @@ class TransactionController extends Controller
             return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
         }
     }
-    
+
     /**
      * Function to Create One Transaction
      * 
@@ -101,6 +101,22 @@ class TransactionController extends Controller
     public function create(AddTransactionRequest $request) {
         try {
             $data = $this->transactionService->add($request);
+
+            return ResponseStatus::response(new DetailResource($data->data), $data?->status ?? null, $data?->statusCode ?? 200);
+        } catch (Error $err) {
+            return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
+        }
+    }
+
+    /**
+     * Function to Refresh token One Transaction
+     * 
+     * @param AddTransactionRequest $request
+     * @return ResponseStatus
+     */
+    public function refreshToken(AddTransactionRequest $request) {
+        try {
+            $data = $this->transactionService->refreshToken($request);
 
             return ResponseStatus::response(new DetailResource($data->data), $data?->status ?? null, $data?->statusCode ?? 200);
         } catch (Error $err) {
