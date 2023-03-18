@@ -8,6 +8,7 @@ use App\Http\Requests\Food\AddFoodRequest;
 use App\Http\Requests\Food\DeleteFoodRequest;
 use App\Http\Requests\Food\GetAllByRestaurantIdRequest;
 use App\Http\Requests\Food\GetFoodRequest;
+use App\Http\Requests\Food\GetMultipleFood;
 use App\Http\Requests\Food\UpdateFoodRequest;
 use App\Http\Resources\Food\AllFoodCollection;
 use App\Http\Resources\Food\DetailResource;
@@ -69,6 +70,22 @@ class FoodController extends Controller
             $data = $this->foodService->find($request->id);
 
             return ResponseStatus::response(new DetailResource($data));
+        } catch (Error $err) {
+            return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
+        }
+    }
+
+    /**
+     * Function to Get Multiple Food
+     * 
+     * @param GetMultipleFood $request
+     * @return ResponseStatus
+     */
+    public function showMultiple(GetMultipleFood $request) {
+        try {
+            $data = $this->foodService->findMany($request);
+
+            return ResponseStatus::response(['items' => new AllFoodCollection($data->items), 'meta' => $data->meta]);
         } catch (Error $err) {
             return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
         }

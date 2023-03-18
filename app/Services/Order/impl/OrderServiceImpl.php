@@ -106,6 +106,15 @@ class OrderServiceImpl extends BaseService implements OrderService
         $order = getValueOrDefault($request->order, ['desc', 'asc'], 'desc');
         $sort = getValueOrDefault($request->sort, self::ALLOW_TO_SORT_AND_SEARCH, 'id');
 
+        $transaction = $this->transaction->find($request->transaction_id);
+        if (auth()->user()->role_id == 4 && $transaction->table->session_id != JWTAuth::getToken()) {
+            return (object) [
+                'items' => [],
+                'status' => 'Unauthorized',
+                'statusCode' => 401
+            ];
+        }
+
         $queryData = $this->order
                     ->with(
                         [
@@ -122,6 +131,7 @@ class OrderServiceImpl extends BaseService implements OrderService
                         'restaurant_id',
                         'food_id',
                         'transaction_id',
+                        'status',
                         'total',
                         'quantity',
                         'note',
@@ -129,7 +139,7 @@ class OrderServiceImpl extends BaseService implements OrderService
                     ->where('transaction_id', $request->transaction_id)
                     ->orderBy($sort, $order);
         
-        return Paginator::paginate($queryData, $request->page, $request->per_page);
+        return Paginator::paginate($queryData, $request->page, $request->per_page ?? 1000);
     }
 
     public function find(int $id) {
@@ -163,15 +173,20 @@ class OrderServiceImpl extends BaseService implements OrderService
         foreach ($request->orders as $order) {
             $order = (object) $order;
             $food = $foods[array_search($order->food_id, array_column($foods->toArray(), 'id'))];   // find index of foods that have food_id = order_id
+            $prevOrdered = array_search($order->food_id, array_column($transaction->orders->toArray(), 'food_id'));
+            
+            $foodQuantity = $food->quantity;
+            if ($prevOrdered !== false) {
+                $foodQuantity += $transaction->orders[$prevOrdered]?->quantity;
+            }
 
-            if ($food->quantity - $order->quantity < 0)
+            if ($foodQuantity - $order->quantity < 0)
                 return (object) [
                     'data' => null,
                     'status' => "$food->name ($food->id) is Out of Stock. (Remaining: $food->quantity)",
                     'statusCode' => 422
                 ];
 
-            $prevOrdered = array_search($order->food_id, array_column($transaction->orders->toArray(), 'food_id'));
             if ($prevOrdered !== false && $transaction->orders[$prevOrdered]?->quantity > $order->quantity) {
                 return (object) [
                     'data' => null,

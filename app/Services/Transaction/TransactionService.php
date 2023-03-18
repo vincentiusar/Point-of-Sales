@@ -16,6 +16,7 @@ interface TransactionService
     public function getAllByRestaurantID(GetAllByRestaurantIdRequest $request);
     public function activeTransactionOnTable(ActiveTransactionRequest $request);
     public function add(AddTransactionRequest $request);
+    public function refreshToken(AddTransactionRequest $request);
     public function payment(PaymentRequest $request);
     public function undoPayment(UndoPaymentRequest $request);
     // public function deletes(DeleteTableRequest $request);

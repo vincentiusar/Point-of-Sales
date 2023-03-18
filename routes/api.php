@@ -7,10 +7,8 @@ use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Restaurant\RestaurantController;
 use App\Http\Controllers\Table\TableController;
 use App\Http\Controllers\Transaction\TransactionController;
-use App\Http\Controllers\User\UserController;
-use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +26,16 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 // });
 
 Route::get('/test', function() {
-    
+    $img = app('firebase.storage')->getBucket()->object("images/leblanc.jpg");
+
+    $expiresAt = new \DateTime('tomorrow');
+    if ($img->exists()) {
+        $img = $img->signedUrl($expiresAt);
+    } else {
+        $img = null;
+    }
+
+    return response($img, 200);
 });
 
 Route::middleware(['cors', 'json.response'])->group(function () {    
@@ -65,6 +72,7 @@ Route::middleware(['cors', 'json.response', 'auth:api'])->group(function () {
             // Customer
             Route::middleware('permission:' . PermissionConstant::GET_ALL_FOOD_BY_RESTAURANT_ID, 'is_the_owner')->get('/', [FoodController::class, 'getAllByRestaurantID']);
             Route::middleware('permission:' . PermissionConstant::GET_ONE_FOOD, 'is_the_owner')->get('/{id}', [FoodController::class, 'show']);
+            Route::middleware('permission:' . PermissionConstant::GET_ALL_FOOD_BY_RESTAURANT_ID, 'is_the_owner')->post('/many', [FoodController::class, 'showMultiple']);
 
             Route::middleware('permission:' . PermissionConstant::ADD_FOOD, 'is_the_owner')->post('/add', [FoodController::class, 'create']);
             Route::middleware('permission:' . PermissionConstant::UPDATE_FOOD, 'is_the_owner')->put('/update/{id}', [FoodController::class, 'update']);
@@ -81,14 +89,14 @@ Route::middleware(['cors', 'json.response', 'auth:api'])->group(function () {
             Route::middleware('permission:' . PermissionConstant::GET_ALL_TRANSACTION_BY_RESTAURANT_ID, 'is_the_owner')->get('/', [TransactionController::class, 'getAllByRestaurantID']);
             Route::middleware('permission:' . PermissionConstant::GET_ONE_TRANSACTION, 'is_the_owner')->get('/{id}', [TransactionController::class, 'show']);
             Route::middleware('permission:' . PermissionConstant::ADD_TRANSACTION, 'is_the_owner')->post('/add', [TransactionController::class, 'create']);
+            Route::middleware('permission:' . PermissionConstant::ADD_TRANSACTION, 'is_the_owner')->post('/refresh', [TransactionController::class, 'refreshToken']);
             Route::middleware('permission:' . PermissionConstant::PAYMENT, 'is_the_owner')->put('/payment/{id}', [TransactionController::class, 'payment']);
             Route::middleware('permission:' . PermissionConstant::UNDO_PAYMENT, 'is_the_owner')->put('/undopayment/{id}', [TransactionController::class, 'undoPayment']);
             Route::middleware('permission:' . PermissionConstant::DELETE_TRANSACTION, 'is_the_owner')->delete('/delete/{id}', [TransactionController::class, 'delete']);
 
             Route::group(['prefix' => '/{transaction_id}/order'], function () {
-                Route::middleware('permission:' . PermissionConstant::GET_ALL_ORDER_BY_TRANSACTION_ID, 'is_the_owner')->get('/', [OrderController::class, 'getAllByTransactionID']);
-                
                 // Customer
+                Route::middleware('permission:' . PermissionConstant::GET_ALL_ORDER_BY_TRANSACTION_ID, 'is_the_owner')->get('/', [OrderController::class, 'getAllByTransactionID']);
                 Route::middleware('permission:' . PermissionConstant::ADD_ORDER, 'is_the_owner')->post('/add', [OrderController::class, 'create']);
 
                 Route::middleware('permission:' . PermissionConstant::UPDATE_ORDER, 'is_the_owner')->put('/update', [OrderController::class, 'update']);
