@@ -145,7 +145,7 @@ class TransactionServiceImpl extends BaseService implements TransactionService
             ]
         );
 
-        $data['token'] = auth()->login($this->user->where('role_id', 4)->where('restaurant_id', $request->restaurant_id)->first());
+        $data['token'] = auth()->login($this->user->select(['id', 'role_id', 'restaurant_id'])->where('role_id', 4)->where('restaurant_id', $request->restaurant_id)->first());
         
         $data->table->update(['status' => TableConstant::ONGOING, 'session_id' => $data['token']]);
 
@@ -160,7 +160,8 @@ class TransactionServiceImpl extends BaseService implements TransactionService
                                 ->where('status', 'on going')
                                 ->first();
 
-        $activeTransaction->token = auth()->login($this->user->where('role_id', 4)->where('restaurant_id', $request->restaurant_id)->first());
+        $user = $this->user->select(['id', 'role_id', 'restaurant_id'])->where('role_id', 4)->where('restaurant_id', $request->restaurant_id)->first();
+        $activeTransaction->token = auth()->login($user);
 
         $activeTransaction->table->update(['session_id' => $activeTransaction->token]);
 

@@ -61,6 +61,18 @@ class RestaurantServiceImpl extends BaseService implements RestaurantService
         return Paginator::paginate($queryData, $request->page, $request->per_page);
     }
 
+    public function showAllByAdmin(int $id)
+    {
+        if (auth()->user()->role)
+
+        $queryData = $this->restaurant
+                        ->whereHas('admin', function ($query) use ($id) {
+                            return $query->where('id', $id);
+                        });
+
+        return Paginator::paginate($queryData, 1, 100);
+    }
+
     public function find(int $id) {
         return $this->findById($id);
     }

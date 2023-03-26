@@ -18,11 +18,12 @@ class AuthServiceImpl extends BaseService implements AuthService
         $credentials = ['username' => $username, 'password' => $pass];
         
         $token = auth('api')->attempt($credentials);
-        if (!$token)
+        if (!$token || auth('api')->user()->role_id === 4)
             return (object) ['data' => 'Unauthorized', 'status' => 'Unauthorized', 'statusCode' => 401];
 
         return (object) [
             'data' => [
+                'user' => auth('api')->user(),
                 'token' => $token
             ],
             'status' => "success",

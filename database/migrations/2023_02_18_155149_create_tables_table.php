@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tables', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('restaurant_id')->constrained('restaurants')->onDelete('cascade');
+            $table->foreignId('restaurant_id')->onDelete('cascade');
             $table->enum('status', ['open', 'ongoing', 'close', 'reserved']);
             $table->softDeletes();
             $table->timestamps();

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('tables', function (Blueprint $table) {
             $table->string('table_number');
-            $table->unique('restaurant_id', 'table_number');
+            // $table->unique('restaurant_id', 'table_number');
         });
     }
 

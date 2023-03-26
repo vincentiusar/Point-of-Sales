@@ -9,6 +9,8 @@ use App\Http\Controllers\Table\TableController;
 use App\Http\Controllers\Transaction\TransactionController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Facades\JWTFactory;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,16 +28,27 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::get('/test', function() {
-    $img = app('firebase.storage')->getBucket()->object("images/leblanc.jpg");
+    // $img = app('firebase.storage')->getBucket()->object("images/leblanc.jpg");
 
-    $expiresAt = new \DateTime('tomorrow');
-    if ($img->exists()) {
-        $img = $img->signedUrl($expiresAt);
-    } else {
-        $img = null;
-    }
+    // $expiresAt = new \DateTime('2063-01-01');
+    // if ($img->exists()) {
+    //     $img = $img->signedUrl($expiresAt);
+    // } else {
+    //     $img = null;
+    // }
 
-    return response($img, 200);
+    // return response($img, 200);
+
+    // $data = [
+    //     'username' => 'kasir1',
+    //     'password' => 'test123',
+    // ];
+
+    // JWTAuth::attempt($data);
+    // $payload = JWTFactory::claims($data)->make();
+    // $token = JWTAuth::encode($payload);
+
+    // return response($token->get());
 });
 
 Route::middleware(['cors', 'json.response'])->group(function () {    
@@ -51,6 +64,7 @@ Route::middleware(['cors', 'json.response', 'auth:api'])->group(function () {
 
         // PURE RESTAURANT REQUEST
         Route::middleware(['permission:' . PermissionConstant::GET_ALL_RESTAURANT . '|' . PermissionConstant::IS_SUPER_ADMIN])->get('/', [RestaurantController::class, 'index']);
+        Route::middleware(['permission:' . PermissionConstant::GET_ALL_RESTAURANT_BY_ADMIN])->get('/admin/{id}', [RestaurantController::class, 'showAllByAdmin']);
         Route::middleware(['permission:' . PermissionConstant::GET_ONE_RESTAURANT, 'is_the_owner'])->get('/{restaurant_id}', [RestaurantController::class, 'show']);
         Route::middleware(['permission:' . PermissionConstant::UPDATE_RESTAURANT])->put('/update', [RestaurantController::class, 'updateByToken']);
         Route::middleware(['permission:' . PermissionConstant::UPDATE_RESTAURANT . '|' . PermissionConstant::IS_SUPER_ADMIN, 'is_the_owner'])->put('/update/{restaurant_id}', [RestaurantController::class, 'updateById']);

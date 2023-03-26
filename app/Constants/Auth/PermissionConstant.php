@@ -10,6 +10,7 @@ class PermissionConstant
 
     // RESTAURANT PERMISSION
     const GET_ALL_RESTAURANT = 'get-all-restaurant';    // 3
+    const GET_ALL_RESTAURANT_BY_ADMIN = 'get-all-restaurant-by-admin';    // 30
     const GET_ONE_RESTAURANT = 'get-one-restaurant';    // 4
     const UPDATE_RESTAURANT = 'update-restaurant';      // 5
     const DELETE_RESTAURANT = 'delete-restaurant';      // 6

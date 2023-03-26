@@ -29,6 +29,7 @@ class DetailResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'address' => $this->address,
+            'image' => $this->images,
         ];
     }
 }

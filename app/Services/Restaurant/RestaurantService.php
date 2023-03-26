@@ -10,6 +10,7 @@ use App\Http\Requests\Restaurant\UpdateRestaurantRequest;
 interface RestaurantService
 {
     public function find(int $id);
+    public function showAllByAdmin(int $id);
     public function fetch(DataTableRequest $request);
     public function updateRestaurant(UpdateRestaurantRequest|UpdateRestaurantByIDRequest $request);
     public function deleteById(DeleteRestaurantRequest $request);

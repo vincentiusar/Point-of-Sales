@@ -414,6 +414,14 @@ class RolePermissionSeeder extends Seeder
                 'updated_at' => null,
                 'deleted_at' => null,
             ],
+            [
+                'id' => 51,
+                'role_id' => 2,
+                'permission_id' => 30,
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
+            ],
         ]);
     }
 }

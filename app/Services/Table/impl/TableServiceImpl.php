@@ -50,10 +50,14 @@ class TableServiceImpl extends BaseService implements TableService
                         'id',
                         'status',
                         'session_id',
-                        'restaurant_id'
+                        'restaurant_id',
+                        'table_number',
                     ])
                     ->when($request->search, function ($query) use ($request) {
                         $query->where('name', 'like', "%$request->search%");
+                    })
+                    ->when($request->status, function ($query) use ($request) {
+                        $query->where('status', $request->status);
                     })
                     ->orderBy($sort, $order);
         
@@ -69,11 +73,15 @@ class TableServiceImpl extends BaseService implements TableService
                         'id',
                         'status',
                         'session_id',
-                        'restaurant_id'
+                        'restaurant_id',
+                        'table_number',
                     ])
                     ->where('restaurant_id', $request->restaurant_id)
                     ->when($request->search, function ($query) use ($request) {
                         $query->where('name', 'like', "%$request->search%");
+                    })
+                    ->when($request->status, function ($query) use ($request) {
+                        $query->where('status', $request->status);
                     })
                     ->orderBy($sort, $order);
         

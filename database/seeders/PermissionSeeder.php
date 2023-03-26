@@ -246,7 +246,14 @@ class PermissionSeeder extends Seeder
                 'updated_at' => null,
                 'deleted_at' => null,
             ],
-            
+            [
+                'id' => 30,
+                'name' => 'Get All Restaurant by Admin',
+                'key' => 'get-all-restaurant-by-admin',
+                'created_at' => null,
+                'updated_at' => null,
+                'deleted_at' => null,
+            ],
         ]);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Restaurant;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DataTableRequest;
 use App\Http\Requests\Restaurant\DeleteRestaurantRequest;
+use App\Http\Requests\Restaurant\GetRestaurantByAdmin;
 use App\Http\Requests\Restaurant\GetRestaurantRequest;
 use App\Http\Requests\Restaurant\UpdateRestaurantByIDRequest;
 use App\Http\Requests\Restaurant\UpdateRestaurantRequest;
@@ -52,6 +53,23 @@ class RestaurantController extends Controller
             $data = $this->restaurantService->find((int) $request->restaurant_id);
 
             return ResponseStatus::response(new DetailResource($data));
+        } catch (Error $err) {
+            return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
+        }
+    }
+
+    /**
+     * Get Restaurant by ID
+     * 
+     * @param GetRestaurantByAdmin $id
+     * @return ResponseStatus
+     */
+    public function showAllByAdmin(GetRestaurantByAdmin $request)
+    {
+        try {
+            $data = $this->restaurantService->showAllByAdmin((int) $request->id);
+
+            return ResponseStatus::response(['items' => new IndexCollection($data->items), 'meta' => $data->meta]);
         } catch (Error $err) {
             return ResponseStatus::response(['Message' => $err->getMessage()], 'Server Internal Error', 500);
         }
