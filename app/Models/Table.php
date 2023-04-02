@@ -22,6 +22,7 @@ class Table extends Model
         'restaurant_id',
         'status',
         'session_id',
+        'table_number',
     ];
 
     /**

@@ -21,6 +21,7 @@ class IndexResource extends JsonResource
             'restaurant' => $this?->restaurant,
             'status' => $this->status,
             'session_id' => $this->session_id,
+            'table_number' => $this->table_number,
         ];
     }
 }

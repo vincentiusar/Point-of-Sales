@@ -96,7 +96,8 @@ class TableServiceImpl extends BaseService implements TableService
         $table = 
             [
                 'restaurant_id' => $request['restaurant_id'],
-                'status' => 'open',
+                'status' => $request->status,
+                'table_number' => $request->table_number,
             ];
         $data = $this->table->create($table);
 

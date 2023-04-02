@@ -23,6 +23,8 @@ class AddTableRequest extends FormRequest
     {
         return [
             'restaurant_id' => 'required|integer|exists:restaurants,id,deleted_at,NULL',
+            'table_number' => 'required|integer',
+            'status' => 'required|in:open,ongoing,close,reserved',
         ];
     }
 }
